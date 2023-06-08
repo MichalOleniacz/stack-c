@@ -74,6 +74,28 @@ Node* peekStack(Stack* stack)
     return stack->top;
 }
 
+Node* searchStack(Stack* stack, void* searchStruct, bool (*compareFn)(void*, void*))
+{
+    if(stack == NULL) {
+        printf("Stack not initialized!\n");
+        return NULL;
+    }
+
+    if(stack->size == 0){
+        printf("Empty stack!\n");
+        return NULL;
+    }
+
+    Node* tmp = stack->top;
+    while(tmp != NULL) {
+        if(compareFn(tmp->data, searchStruct))
+            return tmp;
+        tmp = tmp->next;
+    }
+
+    return NULL;
+};
+
 void serializeStack(Stack *stack, FILE* datafile)
 {
 
@@ -87,8 +109,9 @@ void serializeStack(Stack *stack, FILE* datafile)
 void destroyStack(Stack** stack)
 {
     if((*stack)->size == 0) {
-        free(stack);
+        free(*stack);
         stack = NULL;
+        return;
     }
 
     while((*stack)->top != NULL) {

@@ -22,6 +22,7 @@ Node* peekStack(Stack* stack);
 void serializeStack(Stack* stack, FILE* datafile);
 void deserializeStack(Stack* stack, FILE* datafile);
 void printStack(Stack* stack);
+Node* searchStack(Stack* stack, void* searchStruct, bool (*compareFn)(void*, void*));
 void destroyStack(Stack** stack);
 
 #endif //PROJEKT_STACK_H

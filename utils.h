@@ -8,5 +8,6 @@
 
 bool inRangeEq(int val, int l, int h);
 bool inRange(int val, int l, int h);
+int getSelection(int maxRange);
 
 #endif //PROJECT_UTILS_H

@@ -5,8 +5,26 @@
 #include "interface.h"
 #include "stack.h"
 #include "student.h"
+#include "utils.h"
 #include "stdio.h"
 #include <string.h>
+
+#define SEARCH_OPTIONS_COUNT 5
+
+static const char* searchOptions[SEARCH_OPTIONS_COUNT] = {
+        "Search options:",
+        "1 \t Search by name",
+        "2 \t Search by subject",
+        "3 \t Search by birth year",
+        "4 \t Cancel",
+};
+
+void printSearchMenu()
+{
+    for (int i = 0; i < SEARCH_OPTIONS_COUNT; i++)
+        printf("%s\n", searchOptions[i]);
+}
+
 
 void addToStack(Stack* stack)
 {
@@ -64,16 +82,75 @@ void printFullStack(Stack* stack)
     }
 }
 
+Student* searchInStack(Stack* stack, Student* searchStruct, bool (*compareFn)(void*, void*))
+{
+    Node* result = searchStack(stack, searchStruct, compareFn);
+    if(result == NULL)
+        return NULL;
+    return (Student*)result->data;
+};
+
 void printTopNode(Stack* stack)
 {
     Student* student = peekAtStack(stack);
     printStudent(student);
 }
 
-void removeStack(Stack** stack)
+void handleSearch(Stack* stack)
 {
+    printSearchMenu();
+    int selection = getSelection(SEARCH_OPTIONS_COUNT);
+
+    Student compareStudentStruct;
+    void *result = NULL;
+
+    switch (selection) {
+        case 1:
+            char lastname[512];
+
+            printf("Name:\n");
+            scanf("%s", lastname);
+
+            compareStudentStruct.lastName = lastname;
+
+            result = searchInStack(stack, &compareStudentStruct, searchByName);
+            break;
+        case 2:
+            char studies[512];
+
+            printf("Studies subject:\n");
+            scanf("%s", studies);
+
+            compareStudentStruct.studies = getStudiesId(studies);
+            result = searchInStack(stack, &compareStudentStruct, searchByStudy);
+            break;
+        case 3:
+            int year;
+
+            printf("Year:\n");
+            scanf("%d", &year);
+
+            compareStudentStruct.birthYear = year;
+            result = searchInStack(stack, &compareStudentStruct, searchByYear);
+            break;
+        case 4:
+            return;
+    }
+
+    if(result != NULL)
+        printStudent((Student*)result);
+    else
+        printf("No matches found!\n");
+
     return;
 }
+
+void removeStack(Stack** stack)
+{
+    destroyStack(stack);
+    return;
+}
+
 void saveStack(Stack* stack)
 {
     return;

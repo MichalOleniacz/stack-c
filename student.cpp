@@ -50,6 +50,36 @@ char *getStudyFieldName(Studies id)
     else handleOutOfRange("getStudyFieldName/id: ");
 }
 
+bool searchByName(void* data, void* searchResult)
+{
+    Student* studentData = (Student*)data;
+    Student* search = (Student*)searchResult;
+
+    if(strcmp(studentData->lastName, search->lastName) == 0)
+        return true;
+    return false;
+}
+
+bool searchByStudy(void* data, void* searchResult)
+{
+    Student* studentData = (Student*)data;
+    Student* search = (Student*)searchResult;
+
+    if(studentData->studies == search->studies)
+        return true;
+    return false;
+}
+
+bool searchByYear(void* data, void* searchResult)
+{
+    Student* studentData = (Student*)data;
+    Student* search = (Student*)searchResult;
+
+    if(studentData->birthYear == search->birthYear)
+        return true;
+    return false;
+}
+
 void printStudent(Student* student)
 {
     printf("\nStudent: %s\nField of study: %s,\nBirth year: %d\n\n",

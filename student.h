@@ -31,5 +31,8 @@ void printStudent(Student* student);
 Student* deserializeStudent(const char* filename);
 Studies getStudiesId(const char *value);
 char *getStudyFieldName(Studies id);
+bool searchByName(void* data, void* searchResult);
+bool searchByStudy(void* data, void* searchResult);
+bool searchByYear(void* data, void* searchResult);
 
 #endif //PROJEKT_STUDENT_H
