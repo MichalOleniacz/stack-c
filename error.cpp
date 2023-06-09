@@ -15,3 +15,9 @@ void handleOutOfRange(const char *shortLog)
     printf("%s\tIndex out of range! Exiting...", shortLog);
     exit(EXIT_FAILURE);
 }
+
+void handleFileOpenFailure(const char *shortLog)
+{
+    printf("%s\tFailed to open file! Exiting...", shortLog);
+    exit(EXIT_FAILURE);
+}

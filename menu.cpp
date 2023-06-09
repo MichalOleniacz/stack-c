@@ -28,33 +28,33 @@ void printMenu()
 }
 
 
-short handleSelection(Stack* stack)
+short handleSelection(Stack** stack)
 {
     int selection = getSelection(OPTIONS_COUNT);
     switch (selection) {
         case 1:
-            printFullStack(stack);
+            printFullStack(*stack);
             break;
         case 2:
-            addToStack(stack);
+            addToStack(*stack);
             break;
         case 3:
-            popFromStack(stack);
+            popFromStack(*stack);
             break;
         case 4:
-            printTopNode(stack);
+            printTopNode(*stack);
             break;
         case 5:
-            saveStack(stack);
+            saveStack(*stack);
             break;
         case 6:
-            readStack(stack);
+            *stack = readStack(*stack);
             break;
         case 7:
-            handleSearch(stack);
+            handleSearch(*stack);
             break;
         case 8:
-            removeStack(&stack);
+            removeStack(stack);
             return -1;
         default:
             return 0;
@@ -63,7 +63,7 @@ short handleSelection(Stack* stack)
     return 0;
 }
 
-void startWithMenu(Stack* stack)
+void startWithMenu(Stack** stack)
 {
     while(true) {
         printMenu();

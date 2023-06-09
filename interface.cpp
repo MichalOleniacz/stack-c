@@ -50,6 +50,14 @@ void addToStack(Stack* stack)
 
 Student *popFromStack(Stack* stack)
 {
+    if(stack == NULL) {
+        printf("Stack does not exist!\n");
+        return NULL;
+    }
+    if(stack->size == 0) {
+        printf("Empty Stack.\n");
+        return NULL;
+    }
     Node* topNode = popStack(stack);
     Student* student = (Student*)topNode->data;
     return student;
@@ -57,6 +65,14 @@ Student *popFromStack(Stack* stack)
 
 Student *peekAtStack(Stack* stack)
 {
+    if(stack == NULL)
+        return NULL;
+
+    if(stack->size == 0) {
+        printf("Empty Stack.\n");
+        return NULL;
+    }
+
     Node* topNode = peekStack(stack);
     Student* student = (Student*)topNode->data;
     return student;
@@ -72,10 +88,9 @@ void printFullStack(Stack* stack)
         return;
     }
 
-    printf("Printing Stack (#%d)\n", stack->id);
+    printf("Printing Stack\n");
 
     Node* tmp = stack->top;
-    printf("%s\n", ((Student*)stack->top->data)->lastName);
     while(tmp != NULL) {
         printStudent((Student*)tmp->data);
         tmp = tmp->next;
@@ -93,6 +108,8 @@ Student* searchInStack(Stack* stack, Student* searchStruct, bool (*compareFn)(vo
 void printTopNode(Stack* stack)
 {
     Student* student = peekAtStack(stack);
+    if(student == NULL)
+        return;
     printStudent(student);
 }
 
@@ -147,15 +164,32 @@ void handleSearch(Stack* stack)
 
 void removeStack(Stack** stack)
 {
-    destroyStack(stack);
+    destroyStack(stack, freeStudent);
     return;
 }
 
 void saveStack(Stack* stack)
 {
+    FILE* file;
+    file = fopen("students.bin", "wb");
+    if(file == NULL) handleFileOpenFailure("saveStack:");
+    serializeStack(stack, file, serializeStudent);
+    if(file != NULL) fclose(file);
     return;
 }
-Stack* readStack(Stack* stack)
+
+Stack* readStack(Stack *stack)
 {
-    return NULL;
+    FILE* file;
+    file = fopen("students.bin", "rb");
+    if(file == NULL) handleFileOpenFailure("saveStack:");
+    if(stack != NULL) {
+        destroyStack(&stack, freeStudent);
+    }
+
+    stack = deserializeStack(file, deserializeStudents);
+
+//    printStudent((Student*)stack->top->data);
+
+    return stack;
 }

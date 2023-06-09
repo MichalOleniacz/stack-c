@@ -8,6 +8,7 @@
 #include "error.h"
 
 #define NO_FIELDS 6
+#define MAX_DESERIALIZE_BATCH 512
 
 enum Studies {
     IT,
@@ -25,10 +26,11 @@ typedef struct {
 } Student;
 
 Student* initStudent(const char *lastName, int birthYear, Studies studies);
-void freeStudent(Student* student);
-void serializeStudent(Student* student, const char* filename);
+Student* initEmptyStudent();
+void freeStudent(void** s);
+void serializeStudent(void* s, FILE* file);
+void** deserializeStudents(FILE* file);
 void printStudent(Student* student);
-Student* deserializeStudent(const char* filename);
 Studies getStudiesId(const char *value);
 char *getStudyFieldName(Studies id);
 bool searchByName(void* data, void* searchResult);

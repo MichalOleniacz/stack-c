@@ -15,7 +15,7 @@ void printTopNode(Stack* stack);
 void printFullStack(Stack* stack);
 void removeStack(Stack** stack);
 void saveStack(Stack* stack);
-Stack* readStack(Stack* stack);
+Stack* readStack(Stack *stack);
 void handleSearch(Stack* stack);
 Student* searchInStack(Stack* stack, Student* searchStruct, bool (*compareFn)(void*, void*));
 

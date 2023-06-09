@@ -27,6 +27,14 @@ Student* initStudent(const char *lastName, int birthYear, Studies studies)
     return student;
 }
 
+Student* initEmptyStudent()
+{
+    Student* student = (Student*)malloc(sizeof(Student));
+    if(student == NULL) handleMallocFailure("initEmptyStudent/Student: ");
+
+    return student;
+}
+
 Studies getStudiesId(const char *value)
 {
     if(strcmp(value, studyFieldNames[Studies::IT]) == 0)
@@ -47,8 +55,9 @@ char *getStudyFieldName(Studies id)
 {
     if(inRange(id, 0, NO_FIELDS))
         return (char*)(studyFieldNames[id]);
-    else handleOutOfRange("getStudyFieldName/id: ");
-}
+    else
+        handleOutOfRange("getStudyFieldName/id: ");
+};
 
 bool searchByName(void* data, void* searchResult)
 {
@@ -87,4 +96,53 @@ void printStudent(Student* student)
            getStudyFieldName(student->studies),
            student->birthYear
     );
+}
+
+void serializeStudent(void* s, FILE* file)
+{
+    Student* student = (Student*)s;
+    if(student == NULL || file == NULL)
+        return;
+
+    fwrite(&student->birthYear, sizeof(int), 1, file);
+    fwrite(&student->studies, sizeof(Studies), 1, file);
+    size_t lastNameLen = strlen(student->lastName);
+    fwrite(&lastNameLen, sizeof(size_t), 1, file);
+    fwrite(student->lastName, sizeof(char), lastNameLen, file);
+}
+
+void** deserializeStudents(FILE* file)
+{
+    if(file == NULL)
+        return NULL;
+
+    Student** students = (Student**)malloc(sizeof(Student)*MAX_DESERIALIZE_BATCH);
+    if(students == NULL) handleMallocFailure("deserializeStudents/students:");
+    int i = 0;
+    size_t r = 1;
+
+    while(!feof(file) && i < MAX_DESERIALIZE_BATCH) {
+        Student* student = initEmptyStudent();
+        r = fread(&student->birthYear, sizeof(int), 1, file);
+        r = fread(&student->studies, sizeof(Studies), 1, file);
+        size_t lastNameLen;
+        r = fread(&lastNameLen, sizeof(size_t), 1, file);
+        student->lastName = (char*)malloc(sizeof(char)*lastNameLen);
+        if(student->lastName == NULL) handleMallocFailure("deserializeStudents/lastName:");
+        r = fread(student->lastName, sizeof(char), lastNameLen, file);
+        students[i++] = student;
+    }
+
+    free(students[i-1]);
+    students[i-1] = NULL;
+
+    return (void**)students;
+}
+
+void freeStudent(void** s) {
+    Student* student = (Student*)s;
+
+    free(student->lastName);
+    free(student);
+    *s = NULL;
 }

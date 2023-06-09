@@ -3,22 +3,24 @@
 //
 
 #include "stack.h"
+#include "student.h"
+#include "interface.h"
 
 /**
  * Initialize empty Stack
  *
  * @return Pointer to Stack
  */
-Stack* initStack(int* stackId)
+Stack* initStack()
 {
     Stack* stack = (Stack*)malloc(sizeof(Stack));
     if(stack == NULL) handleMallocFailure("Stack:");
 
-    stack->id = *stackId;
+//    stack->id = *stackId;
     stack->size = 0;
     stack->top = NULL;
 
-    (*stackId)++;
+//    (*stackId)++;
 
     return stack;
 }
@@ -96,9 +98,47 @@ Node* searchStack(Stack* stack, void* searchStruct, bool (*compareFn)(void*, voi
     return NULL;
 };
 
-void serializeStack(Stack *stack, FILE* datafile)
+void serializeStack(Stack *stack, FILE* datafile, void (*serialize)(void*, FILE*))
 {
+    if(datafile == NULL) {
+        printf("File not found!\n");
+        return;
+    }
+    if(stack == NULL) {
+        printf("Stack does not exist!\n");
+        return;
+    }
+    if(stack->size == 0) {
+        printf("Empty Stack.\n");
+        return;
+    }
 
+    Node* topNode = stack->top;
+    while(topNode != NULL) {
+        serialize(topNode->data, datafile);
+        topNode = topNode->next;
+    }
+
+}
+
+Stack* deserializeStack(FILE* datafile, void** (*deserialize)(FILE*))
+{
+    Stack* stack = initStack();
+    void** data = deserialize(datafile);
+    if(data == NULL) {
+        printf("Loaded stack is empty.\n");
+        return stack;
+    }
+
+    int i = MAX_DESERIALIZE_BATCH;
+    while(i >= 0) {
+        if(data[i] != NULL)
+            pushStack(stack, data[i]);
+//        printStudent((Student*)data[i]);
+        i--;
+    }
+
+    return stack;
 }
 
 /**
@@ -106,7 +146,7 @@ void serializeStack(Stack *stack, FILE* datafile)
  *
  * @param stack
  */
-void destroyStack(Stack** stack)
+void destroyStack(Stack** stack, void (*destroyData)(void**))
 {
     if((*stack)->size == 0) {
         free(*stack);
@@ -116,7 +156,7 @@ void destroyStack(Stack** stack)
 
     while((*stack)->top != NULL) {
         Node* topNode = popStack((*stack));
-        destroyNode(&topNode);
+        destroyNode(&topNode, destroyData);
     }
 
     free(*stack);

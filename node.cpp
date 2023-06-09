@@ -15,11 +15,12 @@ Node* initNode(void *data)
     return node;
 }
 
-void destroyNode(Node** node)
+void destroyNode(Node** node, void (*destroyData)(void**))
 {
     if(*node == NULL)
         return;
 
+    destroyData((void**)&((*node)->data));
     free(*node);
     *node = NULL;
 }

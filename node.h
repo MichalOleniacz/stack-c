@@ -13,6 +13,6 @@ typedef struct Node {
 } Node;
 
 Node* initNode(void *data);
-void destroyNode(Node** node);
+void destroyNode(Node** node, void (*destroyData)(void**));
 
 #endif //PROJEKT_NODE_H

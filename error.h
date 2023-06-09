@@ -10,5 +10,6 @@
 
 void handleMallocFailure(const char *shortLog);
 void handleOutOfRange(const char *shortLog);
+void handleFileOpenFailure(const char *shortLog);
 
 #endif //PROJEKT_ERROR_H

@@ -4,9 +4,9 @@
 
 int main()
 {
-    int STACK_ID = 1;
-    Stack* stack = initStack(&STACK_ID);
+//    int STACK_ID = 1;
+    Stack* stack = initStack();
 
-    startWithMenu(stack);
+    startWithMenu(&stack);
     return 0;
 }

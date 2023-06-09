@@ -29,3 +29,8 @@ int getSelection(int maxRange)
     }
     return selection;
 }
+
+void appendEOF(FILE* datafile)
+{
+
+}

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "stack.h"
 
-void startWithMenu(Stack* stack);
+void startWithMenu(Stack** stack);
 void printMenu();
 short getMenuSelection();
 
